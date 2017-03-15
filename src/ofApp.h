@@ -6,7 +6,7 @@
 #include "smog.hpp"
 #include "boat.hpp"
 
-#define NSMOG03 3000
+#define NSMOG03 5000
 #define NSMOG02 1000
 #define NSMOG01 100
 
@@ -37,8 +37,8 @@ class ofApp : public ofBaseApp{
         string curLocation;
     
         ofSoundPlayer noise, calm, bird;
-        bool day;	// show daytime or nighttime celestial body
 
+          
         ofImage niceB;
         ofImage river;
         ofImage niceS;

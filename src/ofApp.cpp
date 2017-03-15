@@ -26,14 +26,9 @@ void ofApp::setup(){
 
         number.init("AvenirNext.ttc", 140);
         title.init("Avenir.ttc", 20);
-
     
     
     myboat.pos.x = ofRandom(0,ofGetWidth());
-   
-    
-
-   
     fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGBA);
     
     fbo.begin();
@@ -42,11 +37,10 @@ void ofApp::setup(){
     
     ofSetVerticalSync(true);
     
-    
     ofEnableAlphaBlending();
     ofBackground(30,30,30);
     
-    
+   
     for(int i=0; i<NSMOG02; i++){
         mySmog[i].setup();
         
@@ -56,26 +50,38 @@ void ofApp::setup(){
         mySmog1[i].setup();
     
     }
-
     for(int i=0; i<NSMOG03; i++){
         mySmog3[i].setup();
-     
     }
-
+    
+     //sound effect
+    calm.load("neighborhood.aiff");
+    noise.load("noise.wav");
+    bird.load("bird.wav");
     
     if (150 > data && data > 101) {
-        calm.load("neighborhood.aiff");
         calm.setLoop(true);
+        calm.setVolume(data*0.004f);
+        noise.stop();
+        bird.stop();
         calm.play();
+        
     } else if ( data > 151) {
-        noise.load("noise.wav");
         noise.setLoop(true);
+        noise.setVolume(data*0.006f);
+
+        calm.stop();
+        bird.stop();
         noise.play();
     }else if ( data < 100) {
-        bird.load("bird.wav");
         bird.setLoop(true);
-        
-        bird.play();        }
+        noise.stop();
+        bird.setVolume(data*0.02f);
+
+        calm.stop();
+        bird.play();
+    }
+
    
 }
 
@@ -87,9 +93,7 @@ void ofApp::setup(){
 //--------------------------------------------------------------
 void ofApp::update(){
     
-    
-
-
+    ofSoundUpdate();
     
     for(int i=0; i<NSMOG02; i++){
         mySmog[i].update();
@@ -124,11 +128,9 @@ void ofApp::draw(){
     
     int x_pos3 = (ofGetWidth() - river.getWidth())/2.0;//river
     int y_pos3 = (ofGetHeight() - river.getHeight())/2.0;
-
-    
     
     if( 150 > data && data > 101){
-               glBegin(GL_QUADS);//background gradient
+        glBegin(GL_QUADS);//background gradient
         glColor3f( 0.807f, 0.935f, 0.902f);
         glVertex3f( 0.0f, 0.0f, 0.0f );
         glVertex3f( ofGetWidth(), 0.0f, 0.0f );
@@ -136,14 +138,12 @@ void ofApp::draw(){
         glVertex3f( ofGetWidth(), ofGetHeight(), 0.0f );
         glVertex3f( 0.0f, ofGetHeight(), 0.0f );
         glEnd();
-       
         
        
         ofSetCircleResolution(60);//sun
         ofSetColor(250, 238, 210,255);
         ofDrawCircle(ofGetWidth()/2, ofGetHeight()/2 - 70, 250);
         
-  
         ofSetColor(255, 255, 255,255);
         niceB.load("image/shanghaiS.png");//shanghai
         niceB.draw(x_pos, y_pos);
@@ -151,10 +151,11 @@ void ofApp::draw(){
         
         
         
+        
+        
         for(int i=0; i<NSMOG02; i++){
             ofSetColor(255,255,255,200);
             mySmog[i].draw();
-            
             
         }
        
@@ -255,10 +256,10 @@ void ofApp::draw(){
         
         
         glBegin(GL_QUADS);//background gradient
-        glColor3f( 0.584f, 0.584f, 0.584f);
+        glColor3f( 0.284f, 0.284f, 0.284f);
         glVertex3f( 0.0f, 0.0f, 0.0f );
         glVertex3f( ofGetWidth(), 0.0f, 0.0f );
-        glColor3f( 0.8f, 0.8f, 0.8f );
+        glColor3f( 0.9f, 0.9f, 0.9f );
         glVertex3f( ofGetWidth(), ofGetHeight(), 0.0f );
         glVertex3f( 0.0f, ofGetHeight(), 0.0f );
         glEnd();
@@ -295,8 +296,6 @@ void ofApp::draw(){
         fbo.draw(0,0);
         
 
-        
-    
         number.setColor(207, 52, 55,255);
         title.setColor(10, 10, 10,255);
         number.drawCenter(ofGetWidth()/2,120);
@@ -306,14 +305,9 @@ void ofApp::draw(){
         for(int i=0; i<NSMOG03; i++){
             mySmog3[i].draw();
             
-            
         }
         
-        
- 
-        
-
-        
+    
         
         
     }
@@ -339,19 +333,84 @@ void ofApp::keyPressed(int key){
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){
-    if (key == '1')
-    data = 50;
-    
-    if (key == '2')
-
-    data = 120;
-
-    
-    if (key == '3')
+    if (key == '1'){
+        data = 50;
         
-    data = 180;
+        smogdata = "50";
+        
+        noise.stop();
+        calm.stop();
+        bird.play();
+        bird.setVolume(data*0.02f);
+
+        
+        
+        
+
+        
+        cout << "Current somg data is: " << smogdata << endl;}
+    
+    
+    if (key == '2'){
+
+        data = 120;
+
+        smogdata = "120";
+        
+        noise.stop();
+        bird.stop();
+        calm.play();
+        calm.setVolume(data*0.004f);
+
+        cout << "Current somg data is: " << smogdata << endl;}
+
+    
+    if (key == '3'){
+        data = 152;
+        smogdata = "152";
+        
+        noise.setLoop(true);
+        calm.stop();
+        bird.stop();
+        noise.setVolume(data*0.006f);
+        noise.play();
+
+        cout << "Current somg data is: " << smogdata << endl;}
+   
+    if (key == '4'){
+        data = response["data"]["iaqi"]["pm25"]["v"].asInt();
+        smogdata = response["data"]["aqi"].asString();
+        
+        if (150 > data && data > 101) {
+            calm.setLoop(true);
+            calm.setVolume(data*0.004f);
+            noise.stop();
+            bird.stop();
+            calm.play();
+            
+        } else if ( data > 151) {
+            noise.setLoop(true);
+            calm.stop();
+            bird.stop();
+            noise.setVolume(data*0.006f);
+            noise.play();
+            
+        }else if ( data < 100) {
+            bird.setLoop(true);
+            bird.setVolume(data*0.02f);
+            noise.stop();
+            calm.stop();
+            bird.play();
+            
+            
+        }
+
+        cout << "Current somg data is: " << smogdata << endl;}
+
 
     }
+
+
 
 
 

@@ -15,9 +15,12 @@ class smog{
     
    public:
     
-    void setup();
+//    void setup();
     void update();
     void draw();
+    
+    void setup();
+
     float x;
     float y;
     float speedY;
