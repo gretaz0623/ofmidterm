@@ -36,10 +36,9 @@ class ofApp : public ofBaseApp{
         string smogdata;
         string curLocation;
     
-    
-    
+        ofSoundPlayer noise, calm, bird;
+        bool day;	// show daytime or nighttime celestial body
 
-    
         ofImage niceB;
         ofImage river;
         ofImage niceS;

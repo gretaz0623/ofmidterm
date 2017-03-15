@@ -49,6 +49,7 @@ void ofApp::setup(){
     
     for(int i=0; i<NSMOG02; i++){
         mySmog[i].setup();
+        
     }
 
     for(int i=0; i<NSMOG01; i++){
@@ -58,18 +59,38 @@ void ofApp::setup(){
 
     for(int i=0; i<NSMOG03; i++){
         mySmog3[i].setup();
-        
+     
     }
-    
 
+    
+    if (150 > data && data > 101) {
+        calm.load("neighborhood.aiff");
+        calm.setLoop(true);
+        calm.play();
+    } else if ( data > 151) {
+        noise.load("noise.wav");
+        noise.setLoop(true);
+        noise.play();
+    }else if ( data < 100) {
+        bird.load("bird.wav");
+        bird.setLoop(true);
+        
+        bird.play();        }
    
 }
 
+
+   
 
 
 
 //--------------------------------------------------------------
 void ofApp::update(){
+    
+    
+
+
+    
     for(int i=0; i<NSMOG02; i++){
         mySmog[i].update();
     }
@@ -289,6 +310,8 @@ void ofApp::draw(){
         }
         
         
+ 
+        
 
         
         
@@ -318,20 +341,19 @@ void ofApp::keyPressed(int key){
 void ofApp::keyReleased(int key){
     if (key == '1')
     data = 50;
-//    string newdata = "50";
-//    smogdata = newdata;
-//    return smogdata;
     
     if (key == '2')
 
     data = 120;
+
     
     if (key == '3')
         
-        data = 180;
+    data = 180;
+
+    }
 
 
-}
 
 //--------------------------------------------------------------
 void ofApp::mouseMoved(int x, int y ){
